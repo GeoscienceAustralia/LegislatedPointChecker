@@ -114,11 +114,30 @@ class CompareFields(object):
             :rtype: Float
 
             """
-            
-            d, m, s = dms.split()
+
+            # check if the separator for the dms string is ' ' or '-'
+            separator = None
+            try:
+                if dms.count('-') >= 2:
+                    separator = '-'
+                elif dms.count(' ') >= 2:
+                    separator = ' '
+            except ValueError:
+                print("Error: dms separator isn't ' ' or '-'")
+
+            # if '-' is the separator then drop the first part
+            if separator == '-':
+                _, d, m, s = dms.split(sep=separator)
+            else:
+                d, m, s = dms.split(sep=separator)
+
+            # calculate the dd value
             dd = abs(float(d)) + float(m)/60 + float(s)/(60*60)
-            if float(d) < 1:
+
+            # make float dd negative if degree is negative or if dms starts with '-'
+            if float(d) < 1 or dms[0] == '-':
                 dd *= -1
+
             return dd
         
         # define the fields that are being compared
@@ -126,7 +145,7 @@ class CompareFields(object):
                       parameters[2].valueAsText,  # row[1] lat_dd_field
                       parameters[3].valueAsText,  # row[2] lon_dms_field
                       parameters[4].valueAsText,  # row[3] lon_dd_field
-                      "SHAPE@"]                  # row[4] geometry
+                      "SHAPE@"]                   # row[4] geometry
                       
         # make the cursor
         with arcpy.da.SearchCursor(parameters[0].valueAsText, field_list) as cursor:

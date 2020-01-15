@@ -1,2 +1,76 @@
 <?xml version="1.0"?>
-<metadata xml:lang="en"><Esri><CreaDate>20190606</CreaDate><CreaTime>14104900</CreaTime><ArcGISFormat>1.0</ArcGISFormat><SyncOnce>TRUE</SyncOnce><ModDate>20190628</ModDate><ModTime>10450400</ModTime><scaleRange><minScale>150000000</minScale><maxScale>5000</maxScale></scaleRange></Esri><tool name="CompareFields" displayname="Legislated Point Checker" toolboxalias="Legislated Point Checker" xmlns=""><arcToolboxHelpPath>c:\program files\arcgis\pro\Resources\Help\gp</arcToolboxHelpPath><parameters><param name="in_layer" displayname="Input Layer" type="Required" direction="Input" datatype="Feature Layer" expression="in_layer"><dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Input point layer&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference></param><param name="lat_dms_field" displayname="Field with latitude in dms format" type="Required" direction="Input" datatype="Field" expression="lat_dms_field"><dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Field with latitude stored in Degrees, Minutes, and Seconds.&lt;/SPAN&gt;&lt;SPAN&gt; Default field name is "SRLTDMS".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference></param><param name="lat_dd_field" displayname="Field with latitude in DD format" type="Required" direction="Input" datatype="Field" expression="lat_dd_field"><dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Field with latitude stored in Decimal Degrees.&lt;/SPAN&gt;&lt;SPAN&gt; Default field name is "COORLT".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference></param><param name="lon_dms_field" displayname="Field with longitude in dms format" type="Required" direction="Input" datatype="Field" expression="lon_dms_field"><dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Field with longitude stored in Degrees, Minutes, and Seconds.&lt;/SPAN&gt;&lt;SPAN&gt; Default field name is "SRLNDMS".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference></param><param name="lon_dd_field" displayname="Field with longitude in DD format" type="Required" direction="Input" datatype="Field" expression="lon_dd_field"><dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Field with longitude stored in Decimal Degrees.&lt;/SPAN&gt;&lt;SPAN&gt; Default field name is "COORLN".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference></param></parameters><summary>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Tool to compare fields with latitude and longitude, and the geometry.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</summary></tool><dataIdInfo><idCitation><resTitle>Legislated Point Checker</resTitle></idCitation><idCredit>Geoscience Australia 2019</idCredit><searchKeys><keyword>legislation</keyword><keyword>points</keyword></searchKeys></dataIdInfo><distInfo><distributor><distorFormat><formatName>ArcToolbox Tool</formatName></distorFormat></distributor></distInfo><mdHrLv><ScopeCd value="005"></ScopeCd></mdHrLv><mdDateSt Sync="TRUE">20190628</mdDateSt></metadata>
+<metadata xml:lang="en">
+    <Esri>
+        <CreaDate>20190606</CreaDate>
+        <CreaTime>14104900</CreaTime>
+        <ArcGISFormat>1.0</ArcGISFormat>
+        <SyncOnce>TRUE</SyncOnce>
+        <ModDate>20190628</ModDate>
+        <ModTime>10450400</ModTime>
+        <scaleRange>
+            <minScale>150000000</minScale>
+            <maxScale>5000</maxScale>
+        </scaleRange>
+    </Esri>
+    <tool name="CompareFields" displayname="Legislated Point Checker" toolboxalias="Legislated Point Checker" xmlns="">
+        <arcToolboxHelpPath>c:\program files\arcgis\pro\Resources\Help\gp</arcToolboxHelpPath>
+        <parameters>
+            <param name="in_layer" displayname="Input Layer" type="Required" direction="Input" datatype="Feature Layer"
+                   expression="in_layer">
+                <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Input
+                    point layer&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;
+                </dialogReference>
+            </param>
+            <param name="lat_dms_field" displayname="Field with latitude in dms format" type="Required"
+                   direction="Input" datatype="Field" expression="lat_dms_field">
+                <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Field
+                    with latitude stored in Degrees, Minutes, and Seconds.&lt;/SPAN&gt;&lt;SPAN&gt; Default field name
+                    is "SRLTDMS".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;
+                </dialogReference>
+            </param>
+            <param name="lat_dd_field" displayname="Field with latitude in DD format" type="Required" direction="Input"
+                   datatype="Field" expression="lat_dd_field">
+                <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Field
+                    with latitude stored in Decimal Degrees.&lt;/SPAN&gt;&lt;SPAN&gt; Default field name is "COORLT".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;
+                </dialogReference>
+            </param>
+            <param name="lon_dms_field" displayname="Field with longitude in dms format" type="Required"
+                   direction="Input" datatype="Field" expression="lon_dms_field">
+                <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Field
+                    with longitude stored in Degrees, Minutes, and Seconds.&lt;/SPAN&gt;&lt;SPAN&gt; Default field name
+                    is "SRLNDMS".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;
+                </dialogReference>
+            </param>
+            <param name="lon_dd_field" displayname="Field with longitude in DD format" type="Required" direction="Input"
+                   datatype="Field" expression="lon_dd_field">
+                <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Field
+                    with longitude stored in Decimal Degrees.&lt;/SPAN&gt;&lt;SPAN&gt; Default field name is "COORLN".&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;
+                </dialogReference>
+            </param>
+        </parameters>
+        <summary>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Tool to compare fields
+            with latitude and longitude, and the geometry.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;
+        </summary>
+    </tool>
+    <dataIdInfo>
+        <idCitation>
+            <resTitle>Legislated Point Checker</resTitle>
+        </idCitation>
+        <idCredit>Geoscience Australia 2019</idCredit>
+        <searchKeys>
+            <keyword>legislation</keyword>
+            <keyword>points</keyword>
+        </searchKeys>
+    </dataIdInfo>
+    <distInfo>
+        <distributor>
+            <distorFormat>
+                <formatName>ArcToolbox Tool</formatName>
+            </distorFormat>
+        </distributor>
+    </distInfo>
+    <mdHrLv>
+        <ScopeCd value="005"></ScopeCd>
+    </mdHrLv>
+    <mdDateSt Sync="TRUE">20190628</mdDateSt>
+</metadata>
