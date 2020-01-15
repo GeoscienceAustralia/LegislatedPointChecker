@@ -123,10 +123,10 @@ class CompareFields(object):
             return dd
         
         # define the fields that are being compared
-        field_list = [parameters[1].valueAsText, # row[0] lat_dms_field
-                      parameters[2].valueAsText, # row[1] lat_dd_field
-                      parameters[3].valueAsText, # row[2] lon_dms_field
-                      parameters[4].valueAsText, # row[3] lon_dd_field
+        field_list = [parameters[1].valueAsText,  # row[0] lat_dms_field
+                      parameters[2].valueAsText,  # row[1] lat_dd_field
+                      parameters[3].valueAsText,  # row[2] lon_dms_field
+                      parameters[4].valueAsText,  # row[3] lon_dd_field
                       "SHAPE@"]                  # row[4] geometry
                       
         # make the cursor
@@ -157,10 +157,14 @@ class CompareFields(object):
                 # send results to user
                 # if lat isn't close: error
                 if not lat_isclose:
-                    arcpy.AddError("Latitude dms: " + str(row[0]) + " DD: " + str(row[1]) + " geometry: " + str(row[4][0].Y))
+                    arcpy.AddError("Latitude dms: " + str(row[0]) +
+                                   " DD: " + str(row[1]) +
+                                   " geometry: " + str(row[4][0].Y))
                 # if lon isn't close: error
                 elif not lon_isclose:
-                    arcpy.AddError("Longitude dms: " + str(row[2]) + " DD: " + str(row[3]) + " geometry: " + str(row[4][0].X))
+                    arcpy.AddError("Longitude dms: " + str(row[2]) +
+                                   " DD: " + str(row[3]) +
+                                   " geometry: " + str(row[4][0].X))
                 # if lat and lon are close: message
                 else:
                     arcpy.AddMessage("point passed")
