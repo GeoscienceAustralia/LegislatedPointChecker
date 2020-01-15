@@ -106,14 +106,13 @@ class CompareFields(object):
         import math
         
         def dms_to_dd(dms):
-            """ Converts "ddd mm ss.ssss" format to floating point decimal degree
+            """ Converts "ddd mm ss.ssss" string to floating point decimal degree
             
-            Parameters:
-                dms (str):The string containing "ddd mm ss.ssss"
-                
-            Returns:
-                float:The string converted into signed floating point representation
-            
+            :param dms: The string containing "ddd mm ss.ssss"
+            :type dms: String
+            :return: The string converted into signed floating point representation
+            :rtype: Float
+
             """
             
             d, m, s = dms.split()
