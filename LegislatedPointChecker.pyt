@@ -35,7 +35,7 @@ class CompareFields(object):
 
         # parameters[1] == compare_geom_dms
         compare_geom_dms = arcpy.Parameter(
-            displayName="Compare geometry to DMS?",
+            displayName="Compare DMS to geometry?",
             name="compare_geom_dms",
             datatype="GPBoolean",
             parameterType="Required",
@@ -65,7 +65,7 @@ class CompareFields(object):
 
         # parameters[4] == compare_geom_dd
         compare_geom_dd = arcpy.Parameter(
-            displayName="Compare geometry to DD?",
+            displayName="Compare DD to geometry?",
             name="compare_geom_dd",
             datatype="GPBoolean",
             parameterType="Required",
@@ -201,11 +201,13 @@ class CompareFields(object):
             return dd
         
         # define the fields that are being compared
-        field_list = [parameters[2].valueAsText,  # row[0] lat_dms_field
-                      parameters[3].valueAsText,  # row[1] lon_dms_field
-                      parameters[5].valueAsText,  # row[2] lat_dd_field
-                      parameters[6].valueAsText,  # row[3] lon_dd_field
-                      "SHAPE@"]                   # row[4] geometry
+        oid_fieldname = arcpy.Describe(parameters[0].valueAsText).OIDFieldName
+        field_list = [oid_fieldname,              # row[0] OID
+                      parameters[2].valueAsText,  # row[1] lat_dms_field
+                      parameters[3].valueAsText,  # row[2] lon_dms_field
+                      parameters[5].valueAsText,  # row[3] lat_dd_field
+                      parameters[6].valueAsText,  # row[4] lon_dd_field
+                      "SHAPE@"]                   # row[5] geometry
                       
         # make the cursor
         with arcpy.da.SearchCursor(parameters[0].valueAsText, field_list) as cursor:
@@ -213,56 +215,66 @@ class CompareFields(object):
             for row in cursor:
             
                 # if no lat DMS defined
-                if row[0] is None:  # lat_dms_field
+                if row[1] is None:  # lat_dms_field
                     print("no latitude DMS value")
                     dms_lat_isclose = True
                 else:
                     # check dms lat isclose to geom lat
-                    dms_lat_isclose = math.isclose(dms_to_dd(row[0]), row[4][0].Y, abs_tol=1e-8)
+                    dms_lat_isclose = math.isclose(dms_to_dd(row[1]), row[5][0].Y, abs_tol=1e-8)
 
                 # if no lon DMS defined
-                if row[1] is None:  # lon_dms_field
+                if row[2] is None:  # lon_dms_field
                     print("no longitude DMS value")
                     dms_lon_isclose = True
                 else:
                     # check dms long isclose to geom long
-                    dms_lon_isclose = math.isclose(dms_to_dd(row[1]), row[4][0].X, abs_tol=1e-8)
+                    dms_lon_isclose = math.isclose(dms_to_dd(row[2]), row[5][0].X, abs_tol=1e-8)
 
                 # check dd lat isclose to geom lat
-                dd_lat_isclose = math.isclose(float(row[2]), row[4][0].Y, abs_tol=1e-8)
+                dd_lat_isclose = math.isclose(float(row[3]), row[5][0].Y, abs_tol=1e-8)
 
                 # check dd long isclose to geom long
-                dd_lon_isclose = math.isclose(float(row[3]), row[4][0].X, abs_tol=1e-8)
+                dd_lon_isclose = math.isclose(float(row[4]), row[5][0].X, abs_tol=1e-8)
                         
                 # check if dms isclose to dd lat
-                dms_dd_lat_isclose = math.isclose(dms_to_dd(row[0]), float(row[2]), abs_tol=1e-8)
+                dms_dd_lat_isclose = math.isclose(dms_to_dd(row[1]), float(row[3]), abs_tol=1e-8)
 
                 # check if dms isclose to dd long
-                dms_dd_long_isclose = math.isclose(dms_to_dd(row[1]), float(row[3]), abs_tol=1e-8)
+                dms_dd_long_isclose = math.isclose(dms_to_dd(row[2]), float(row[4]), abs_tol=1e-8)
 
                 # send results to user
 
+                # report geom vs DMS
                 if parameters[1].value:
                     # if lat isn't close: error
                     if not dms_lat_isclose:
-                        arcpy.AddError("Lat DMS:" + str(row[0]) +
-                                       " Lat geometry:" + str(dd_to_dms(row[4][0].Y)))
+                        arcpy.AddError("feature: " + str(row[0]) +
+                                       " Lat DMS:" + str(row[1]) +
+                                       " Lat geometry:" + str(dd_to_dms(row[5][0].Y)))
                     # if lon isn't close: error
                     if not dms_lon_isclose:
-                        arcpy.AddError("Long DMS:" + str(row[1]) +
-                                       " Long geometry:" + str(dd_to_dms(row[4][0].X)))
+                        arcpy.AddError("feature: " + str(row[0]) +
+                                       " Long DMS:" + str(row[2]) +
+                                       " Long geometry:" + str(dd_to_dms(row[5][0].X)))
+
+                # report geom vs DD
                 if parameters[4].value:
                     if not dd_lat_isclose:
-                        arcpy.AddError("Lat DD:" + str(row[2]) +
-                                       " Lat geometry:" + str(row[4][0].Y))
+                        arcpy.AddError("feature: " + str(row[0]) +
+                                       " Lat DD:" + str(row[3]) +
+                                       " Lat geometry:" + str(row[5][0].Y))
                     if not dd_lon_isclose:
-                        arcpy.AddError("Long DD: " + str(row[3]) +
-                                       " Long geometry:" + str(row[4][0].Y))
+                        arcpy.AddError("feature: " + str(row[0]) +
+                                       " Long DD: " + str(row[4]) +
+                                       " Long geometry:" + str(row[5][0].Y))
 
+                # report DMS vs DD
                 if parameters[7].value:
                     if not dms_dd_lat_isclose:
-                        arcpy.AddError("Lat DMS:" + str(row[0]) +
-                                       " Lat DD:" + str(dd_to_dms(row[2])))
+                        arcpy.AddError("feature: " + str(row[0]) +
+                                       " Lat DMS:" + str(row[1]) +
+                                       " Lat DD:" + str(dd_to_dms(row[3])))
                     if not dms_dd_long_isclose:
-                        arcpy.AddError("Long DMS:" + str(row[1]) +
-                                       " Long DD: " + str(dd_to_dms(row[3])))
+                        arcpy.AddError("feature: " + str(row[0]) +
+                                       " Long DMS:" + str(row[2]) +
+                                       " Long DD: " + str(dd_to_dms(row[4])))
