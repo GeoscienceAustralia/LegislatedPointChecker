@@ -1,42 +1,42 @@
 <?xml version="1.0"?>
 <metadata xml:lang="en">
-    <Esri>
-        <CreaDate>20190606</CreaDate>
-        <CreaTime>13215500</CreaTime>
-        <ArcGISFormat>1.0</ArcGISFormat>
-        <SyncOnce>TRUE</SyncOnce>
-        <ModDate>20200115</ModDate>
-        <ModTime>120354</ModTime>
-        <scaleRange>
-            <minScale>150000000</minScale>
-            <maxScale>5000</maxScale>
-        </scaleRange>
-    </Esri>
-    <toolbox name="LegislatedPointChecker" alias="Legislated Point Checker">
-        <arcToolboxHelpPath>c:\program files\arcgis\pro\Resources\Help\gp</arcToolboxHelpPath>
-        <toolsets/>
-    </toolbox>
-    <dataIdInfo>
-        <idCitation>
-            <resTitle>LegislatedPointChecker</resTitle>
-        </idCitation>
-        <idPurp>Check to see if DMS text is the same as the DD representation.</idPurp>
-        <searchKeys>
-            <keyword>legislation</keyword>
-            <keyword>digitise</keyword>
-            <keyword>points</keyword>
-            <keyword>dms</keyword>
-        </searchKeys>
-    </dataIdInfo>
-    <distInfo>
-        <distributor>
-            <distorFormat>
-                <formatName>ArcToolbox Toolbox</formatName>
-            </distorFormat>
-        </distributor>
-    </distInfo>
-    <mdHrLv>
-        <ScopeCd value="005"></ScopeCd>
-    </mdHrLv>
-    <mdDateSt Sync="TRUE">20190607</mdDateSt>
+	<Esri>
+		<CreaDate>20190606</CreaDate>
+		<CreaTime>13215500</CreaTime>
+		<ArcGISFormat>1.0</ArcGISFormat>
+		<SyncOnce>TRUE</SyncOnce>
+		<ModDate>20200116</ModDate>
+		<ModTime>123938</ModTime>
+		<scaleRange>
+			<minScale>150000000</minScale>
+			<maxScale>5000</maxScale>
+		</scaleRange>
+	</Esri>
+	<toolbox name="LegislatedPointChecker" alias="Legislated Point Checker">
+		<arcToolboxHelpPath>c:\program files\arcgis\pro\Resources\Help\gp</arcToolboxHelpPath>
+		<toolsets/>
+	</toolbox>
+	<dataIdInfo>
+		<idCitation>
+			<resTitle>LegislatedPointChecker</resTitle>
+		</idCitation>
+		<idPurp>Check to see if DMS text is the same as the DD representation.</idPurp>
+		<searchKeys>
+			<keyword>legislation</keyword>
+			<keyword>digitise</keyword>
+			<keyword>points</keyword>
+			<keyword>dms</keyword>
+		</searchKeys>
+	</dataIdInfo>
+	<distInfo>
+		<distributor>
+			<distorFormat>
+				<formatName>ArcToolbox Toolbox</formatName>
+			</distorFormat>
+		</distributor>
+	</distInfo>
+	<mdHrLv>
+		<ScopeCd value="005"></ScopeCd>
+	</mdHrLv>
+	<mdDateSt Sync="TRUE">20190607</mdDateSt>
 </metadata>

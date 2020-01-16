@@ -104,6 +104,26 @@ class CompareFields(object):
         arcpy.AddMessage("checking " + parameters[0].valueAsText)
         
         import math
+
+        def dd_to_dms(dd):
+            """ Converts floating point decimal degree to "ddd mm ss.ssss" string
+
+            :param dd: float representing decimal degrees
+            :type dd: float
+            :return: The string containing "ddd mm ss.ssss"
+            :rtype: string
+
+            """
+
+            # calculate the d, m, s values
+            is_positive = dd >= 0
+            dd = abs(dd)
+            m, s = divmod(dd * 3600, 60)
+            d, m = divmod(m, 60)
+            d = d if is_positive else -d
+            s = round(s, 4)
+            dms = " ".join((str(int(d)), str(int(m)).zfill(2), str(s)))
+            return dms
         
         def dms_to_dd(dms):
             """ Converts "ddd mm ss.ssss" string to floating point decimal degree
@@ -127,7 +147,10 @@ class CompareFields(object):
 
             # if '-' is the separator then drop the first part
             if separator == '-':
-                _, d, m, s = dms.split(sep=separator)
+                if len(dms.split(sep=separator)) == 4:
+                    _, d, m, s = dms.split(sep=separator)
+                else:
+                    d, m, s = dms.split(sep=separator)
             else:
                 d, m, s = dms.split(sep=separator)
 
@@ -153,7 +176,8 @@ class CompareFields(object):
             for row in cursor:
             
                 # if no lat defined: pass
-                if row[0] is None:
+                if row[0] is None:  # lat_dms_field
+                    print("no latitude DMS value")
                     lat_isclose = True
                 # if lat defined: check dms isclose to DD
                 else:
@@ -163,7 +187,8 @@ class CompareFields(object):
                         lat_isclose = math.isclose(dms_to_dd(row[0]), row[4][0].Y, abs_tol=1e-8)
                     
                 # if no lon defined: pass
-                if row[2] is None:
+                if row[2] is None:  # lon_dms_field
+                    print("no longitude DMS value")
                     lon_isclose = True
                 # if lat defined: check dms isclose to DD
                 else:
@@ -176,13 +201,13 @@ class CompareFields(object):
                 # if lat isn't close: error
                 if not lat_isclose:
                     arcpy.AddError("Latitude dms: " + str(row[0]) +
-                                   " DD: " + str(row[1]) +
-                                   " geometry: " + str(row[4][0].Y))
+                                   " DD: " + str(dd_to_dms(row[1])) +
+                                   " geometry: " + str(dd_to_dms(row[4][0].Y)))
                 # if lon isn't close: error
                 elif not lon_isclose:
                     arcpy.AddError("Longitude dms: " + str(row[2]) +
-                                   " DD: " + str(row[3]) +
-                                   " geometry: " + str(row[4][0].X))
+                                   " DD: " + str(dd_to_dms(row[3])) +
+                                   " geometry: " + str(dd_to_dms(row[4][0].X)))
                 # if lat and lon are close: message
                 else:
                     arcpy.AddMessage("point passed")
