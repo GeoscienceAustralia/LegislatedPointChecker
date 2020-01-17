@@ -102,6 +102,16 @@ class CompareFields(object):
             direction="Input")
         compare_dms_dd.value = True
         params.append(compare_dms_dd)
+
+        # parameters[8] == create_xls
+        create_xls = arcpy.Parameter(
+            displayName="Create Excel Report?",
+            name="create_xls",
+            datatype="GPBoolean",
+            parameterType="Required",
+            direction="Input")
+        create_xls.value = True
+        params.append(create_xls)
         
         return params
 
@@ -180,7 +190,7 @@ class CompareFields(object):
                 elif dms.count(' ') >= 2:
                     separator = ' '
             except ValueError:
-                print("Error: dms separator isn't ' ' or '-'")
+                arcpy.AddError("Error: dms separator isn't ' ' or '-'")
 
             # if '-' is the separator then drop the first part
             if separator == '-':
@@ -201,8 +211,7 @@ class CompareFields(object):
             return dd
         
         # define the fields that are being compared
-        oid_fieldname = arcpy.Describe(parameters[0].valueAsText).OIDFieldName
-        field_list = [oid_fieldname,              # row[0] OID
+        field_list = ["OID@",                     # row[0] oid
                       parameters[2].valueAsText,  # row[1] lat_dms_field
                       parameters[3].valueAsText,  # row[2] lon_dms_field
                       parameters[5].valueAsText,  # row[3] lat_dd_field
@@ -210,31 +219,67 @@ class CompareFields(object):
                       "SHAPE@"]                   # row[5] geometry
                       
         # make the cursor
+        row_counter = 0
         with arcpy.da.SearchCursor(parameters[0].valueAsText, field_list) as cursor:
+
+            # prepare the excel workbook for output
+            if parameters[8].value:
+                import xlwt
+                # make a workbook object
+                wb = xlwt.Workbook()
+                # make a worksheet in the workbook
+                ws = wb.add_sheet("LegislatedPointChecker")  # len(name) <= 31
+                # write the header with the fields assigned by the input parameters
+                for i in range(len(field_list)):
+                    ws.write(row_counter, i, field_list[i])
+                # add extra fields for the tests
+                # TODO: only write the fields that are tested
+                extra_fields = ["DMS vs Geom",
+                                "DD vs Geom",
+                                "DMS vs DD"]
+                for i in range(len(extra_fields)):
+                    ws.write(row_counter, i + len(field_list), extra_fields[i])
+
+                # define green and red styles
+                green_style = xlwt.easyxf('pattern: pattern solid, pattern_fore_colour lime, pattern_back_colour lime')
+                red_style = xlwt.easyxf('pattern: pattern solid, pattern_fore_colour rose, pattern_back_colour rose')
+
+                # full field list in excel spreadsheet:
+                # 0  oid
+                # 1  lat_dms_field
+                # 2  lon_dms_field
+                # 3  lat_dd_field
+                # 4  lon_dd_field
+                # 5  geometry
+                # 6  DMS vs Geom
+                # 7  DD vs Geom
+                # 8  DMS vs DD
+
             # loop through features
             for row in cursor:
-            
+                row_counter += 1
+
                 # if no lat DMS defined
                 if row[1] is None:  # lat_dms_field
-                    print("no latitude DMS value")
-                    dms_lat_isclose = True
+                    arcpy.AddError("no latitude DMS value")
+                    dms_geom_lat_isclose = True
                 else:
                     # check dms lat isclose to geom lat
-                    dms_lat_isclose = math.isclose(dms_to_dd(row[1]), row[5][0].Y, abs_tol=1e-8)
+                    dms_geom_lat_isclose = math.isclose(dms_to_dd(row[1]), row[5][0].Y, abs_tol=1e-8)
 
                 # if no lon DMS defined
                 if row[2] is None:  # lon_dms_field
-                    print("no longitude DMS value")
-                    dms_lon_isclose = True
+                    arcpy.AddError("no longitude DMS value")
+                    dms_geom_lon_isclose = True
                 else:
                     # check dms long isclose to geom long
-                    dms_lon_isclose = math.isclose(dms_to_dd(row[2]), row[5][0].X, abs_tol=1e-8)
+                    dms_geom_lon_isclose = math.isclose(dms_to_dd(row[2]), row[5][0].X, abs_tol=1e-8)
 
                 # check dd lat isclose to geom lat
-                dd_lat_isclose = math.isclose(float(row[3]), row[5][0].Y, abs_tol=1e-8)
+                dd_geom_lat_isclose = math.isclose(float(row[3]), row[5][0].Y, abs_tol=1e-8)
 
                 # check dd long isclose to geom long
-                dd_lon_isclose = math.isclose(float(row[4]), row[5][0].X, abs_tol=1e-8)
+                dd_geom_lon_isclose = math.isclose(float(row[4]), row[5][0].X, abs_tol=1e-8)
                         
                 # check if dms isclose to dd lat
                 dms_dd_lat_isclose = math.isclose(dms_to_dd(row[1]), float(row[3]), abs_tol=1e-8)
@@ -244,31 +289,31 @@ class CompareFields(object):
 
                 # send results to user
 
-                # report geom vs DMS
+                # print geom vs DMS
                 if parameters[1].value:
                     # if lat isn't close: error
-                    if not dms_lat_isclose:
+                    if not dms_geom_lat_isclose:
                         arcpy.AddError("feature: " + str(row[0]) +
                                        " Lat DMS:" + str(row[1]) +
                                        " Lat geometry:" + str(dd_to_dms(row[5][0].Y)))
                     # if lon isn't close: error
-                    if not dms_lon_isclose:
+                    if not dms_geom_lon_isclose:
                         arcpy.AddError("feature: " + str(row[0]) +
                                        " Long DMS:" + str(row[2]) +
                                        " Long geometry:" + str(dd_to_dms(row[5][0].X)))
 
-                # report geom vs DD
+                # print geom vs DD
                 if parameters[4].value:
-                    if not dd_lat_isclose:
+                    if not dd_geom_lat_isclose:
                         arcpy.AddError("feature: " + str(row[0]) +
                                        " Lat DD:" + str(row[3]) +
                                        " Lat geometry:" + str(row[5][0].Y))
-                    if not dd_lon_isclose:
+                    if not dd_geom_lon_isclose:
                         arcpy.AddError("feature: " + str(row[0]) +
                                        " Long DD: " + str(row[4]) +
                                        " Long geometry:" + str(row[5][0].Y))
 
-                # report DMS vs DD
+                # print DMS vs DD
                 if parameters[7].value:
                     if not dms_dd_lat_isclose:
                         arcpy.AddError("feature: " + str(row[0]) +
@@ -278,3 +323,42 @@ class CompareFields(object):
                         arcpy.AddError("feature: " + str(row[0]) +
                                        " Long DMS:" + str(row[2]) +
                                        " Long DD: " + str(dd_to_dms(row[4])))
+
+                # write feature values to excel spreadsheet
+                for i in range(len(row)):
+                    ws.write(row_counter, i, str(row[i]))
+
+                # write test outcomes to excel spreadsheet
+                if parameters[1].value:
+                    if not dms_geom_lat_isclose or not dms_geom_lon_isclose:
+                        text = "FAIL"
+                        style = red_style
+                    else:
+                        text = "PASS"
+                        style = green_style
+                    ws.write(row_counter, 6, text, style)
+                if parameters[4].value:
+                    if not dd_geom_lat_isclose or not dd_geom_lon_isclose:
+                        text = "FAIL"
+                        style = red_style
+                    else:
+                        text = "PASS"
+                        style = green_style
+                    ws.write(row_counter, 7, text, style)
+                if parameters[7].value:
+                    if not dms_dd_lat_isclose or not dms_dd_long_isclose:
+                        text = "FAIL"
+                        style = red_style
+                    else:
+                        text = "PASS"
+                        style = green_style
+                    ws.write(row_counter, 8, text, style)
+
+            # save the excel workbook
+            if parameters[8].value:
+                from tempfile import mkstemp
+                from os import startfile
+                out_xls = mkstemp(suffix=".xls")[1]
+                arcpy.AddMessage(out_xls)
+                wb.save(out_xls)
+                startfile(out_xls)
